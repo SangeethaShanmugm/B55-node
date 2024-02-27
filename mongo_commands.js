@@ -135,9 +135,82 @@ db.products.find({}).sort({ rating: -1 }).limit(5).skip(2).pretty()
 
 //task 
 
-find all products with rating greater than 4
-find all products with price less than or equal to ₹50,000
-find all products with name containing "Samsung"
-find all products sorted by price in asc order
-find the cheapest product 
-find all products with summary containing the word "camera"
+// find all products with rating greater than 4
+
+db.products.find({ rating: { $gt: 4 } }).pretty()
+
+// find all products with price less than or equal to ₹50,000
+
+db.products.find({ price: { $lte: "₹50,000" } }).pretty()
+
+db.products.find({ price: { $regex: /^₹[0-4]?[0-9],[0-9]{3}$|^₹50,000$/ } }).pretty()
+
+
+// find all products with name containing "Samsung"
+
+db.products.find({ name: { $regex: /Samsung/i } }).pretty()
+
+
+db.products.find({ name: { $regex: /samsung/ } }).pretty()
+
+
+
+// find all products sorted by price in asc order
+
+db.products.find().sort({ price: 1 }).pretty()
+
+// find the cheapest product 
+db.products.find().sort({ price: 1 }).limit(1).pretty()
+
+
+// find all products with summary containing the word "camera"
+
+db.products.find({ summary: { $regex: /camera/ } }).pretty()
+
+
+db.products.find({ summary: { $regex: /camera/i } }).pretty()
+
+//$in
+
+db.products.find({ name: { $in: [/^Samsung/i, /^Apple/] } }).pretty()
+
+
+db.products.find({ name: /^Samsung/ }).pretty()
+
+//update 
+
+db.products.updateMany({}, { $set: { category: "electronics" } })
+
+
+db.products.find().pretty()
+
+
+
+db.products.updateOne({ "name": "iPhone 15 (128 GB)" }, { $set: { category: "mobile" } })
+
+db.products.find({ "name": "iPhone 15 (128 GB)" }).pretty()
+
+
+
+
+// update category: "laptop" for "Samsung Galaxy Book2 Pro 360 Intel 12th Gen i7 EvoTM 33.78 cm (13.3)"
+
+// update category: "accessories" for "SAMSUNG Galaxy Buds2 Pro True Wireless Bluetooth Earbud Headphones - White"
+
+// update category: "accessories" for "Samsung Galaxy Watch5 Bluetooth (44 mm, Sapphire, Compatible with Android only)"
+
+
+
+//delete  all products with rating > 4.9
+
+
+
+db.products.find({ rating: { $gt: 4.9 } }).pretty()
+
+
+db.products.deleteMany({ rating: { $gt: 4.9 } })
+
+
+db.products.find({ rating: { $gt: 4.5 } }).pretty()
+
+db.products.deleteOne({ rating: { $gt: 4.5 } })
