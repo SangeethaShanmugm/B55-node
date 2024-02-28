@@ -214,3 +214,39 @@ db.products.deleteMany({ rating: { $gt: 4.9 } })
 db.products.find({ rating: { $gt: 4.5 } }).pretty()
 
 db.products.deleteOne({ rating: { $gt: 4.5 } })
+
+
+//aggregation 
+
+db.orders.insertMany([
+    { _id: 0, productName: "Steel Beam", status: "new", quantity: 10 },
+    { _id: 1, productName: "Steel Beam", status: "urgent", quantity: 20 },
+    { _id: 2, productName: "Steel Beam", status: "urgent", quantity: 30 },
+    { _id: 3, productName: "Iron Rod", status: "new", quantity: 15 },
+    { _id: 4, productName: "Iron Rod", status: "urgent", quantity: 50 },
+    { _id: 5, productName: "Iron Rod", status: "urgent", quantity: 10 },
+])
+
+
+db.orders.find().pretty()
+
+//match urgent products
+// select * from orders where status: "urgent"
+
+//group based on productName and sum its quantity
+// select sum(quantity) from orders where status="urgent" group by productName
+
+//aggregate pipeline
+db.orders.aggregate([
+    //stage-1 => match urgent products
+    {
+        $match: { status: "urgent" }
+    },
+    //stage-2 =>group based on productName and sum its quantity
+    {
+        $group: {
+            _id: "$productName",
+            totalUrgentQuantity: { $sum: "$quantity" }
+        }
+    }
+])
