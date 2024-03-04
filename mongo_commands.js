@@ -250,3 +250,126 @@ db.orders.aggregate([
         }
     }
 ])
+
+
+//basic cursor methods => map, toArray, pretty, forEach, limit, count, sort
+
+//cursor => pointer
+
+var myCursor = db.orders.find({ _id: 5 }).pretty()
+
+
+// orders with productName => Steel Beam
+
+
+var myCursor = db.orders.find({ productName: "Steel Beam" }).pretty()
+
+//get all orders 
+
+var myCursor = db.orders.find().pretty()
+
+
+//next()
+
+var myCursor = db.orders.find({ _id: { $gt: 3 } }).pretty()
+
+while (myCursor.hasNext()) {
+    print(tojson(myCursor.next()))
+}
+
+//forEach
+var myCursor = db.orders.find({ _id: { $gt: 2 } }).pretty()
+myCursor.forEach(printjson)
+
+
+
+var myCursor = db.orders.find()
+
+myCursor.forEach(function (product) {
+    print(`Product Name: ${product.productName}, Quantity: ${product.quantity}`)
+})
+
+
+
+//count()
+
+db.orders.find().count()
+
+
+//toArray
+
+var allOrders = db.orders.find()
+
+var allOrders = db.orders.find().toArray()
+allOrders.forEach(function (order) {
+    print(`Order ID: ${order._id}, ProductName: ${order.productName}`)
+})
+
+
+//map()
+
+var listProduct = db.orders.find().limit(2).map(function (data) {
+    return data.productName
+})
+
+
+var listProduct = db.orders.find().map(function (data) {
+    return data.quantity * 100
+})
+
+
+//lookups
+
+db.items.insertMany([
+    { "_id": 1, "item": "almonds", "price": 12, "quantity": 2 },
+    { "_id": 2, "item": "pecans", "price": 20, "quantity": 1 }
+])
+
+db.items.find().pretty()
+
+
+db.inventory.insertMany([
+    { "_id": 1, "sku": "almonds", "description": "product 1", "instock": 120 },
+    { "_id": 2, "sku": "bread", "description": "product 2", "instock": 80 },
+    { "_id": 3, "sku": "cashews", "description": "product 3", "instock": 90 },
+    { "_id": 4, "sku": "pecans", "description": "product 4", "instock": 70 },
+    { "_id": 5, "sku": null, "description": "Incomplete" },
+    { "_id": 6 },
+])
+
+
+db.inventory.find().pretty()
+
+// {
+//     $lookup:
+//       {
+//         from: <collection to join>,
+//         localField: <field from the input documents>,
+//         foreignField: <field from the documents of the "from" collection>,
+//         as: <output array field>
+//       }
+//  }
+
+db.items.aggregate(
+    [
+        {
+            $lookup:
+            {
+                from: "inventory",
+                localField: "item",
+                foreignField: "sku",
+                as: "Combined_data"
+            }
+        },
+        {
+            $unwind: "$Combined_data"
+        },
+        {
+            $project: {
+                sku: "$Combined_data.sku",
+            }
+        }
+
+    ]
+).pretty()
+
