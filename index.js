@@ -84,7 +84,7 @@ const products = [
         "price": "₹84,990",
         "rating": 5.0,
         "summary": "Take on everything from professional-quality editing to action-packed gaming with ease. The Apple M1 chip with an 8-core CPU delivers up to 3.5x faster performance than the previous generation while using way less power.",
-        "category": "Laptop"
+        "category": "laptop"
     },
     {
         "id": "10",
@@ -93,7 +93,7 @@ const products = [
         "price": "₹1,10,790",
         "rating": 4.9,
         "summary": " 12th Generation Intel EVOTM Core i7-1260P processor (2.1 GHz up to 4.6 GHz 18 MB L3 Cache) | Memory: 16 GB LPDDR5 Memory (On BD 16 GB) | Storage: 512 GB NVMe SSD",
-        "category": "Laptop"
+        "category": "laptop"
     }
 ]
 
@@ -102,9 +102,19 @@ app.get('/', (req, res) => {
     res.send('Hello Everyone😀')
 })
 
+// Task
+
+// /products =  all the products
+// /products?category=mobile => only category mobile
+// /products?rating=4.9=> products with rating 4.9
+// /products?category=mobile&rating=5
+
 //get all products
 app.get('/products', (req, res) => {
-    res.send(products)
+    const { category } = req.query
+    console.log(req.query, category)
+    const result = products.filter((pd) => pd.category === category)
+    res.send(result)
 })
 
 //get product by id
