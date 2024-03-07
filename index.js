@@ -2,11 +2,12 @@
 // const { MongoClient } = require('mongodb');
 import express from "express"
 import * as dotenv from 'dotenv'
+import cors from "cors"
 import { MongoClient } from "mongodb"
 import { productRouter } from "./routes/products.js"
 const app = express()
 dotenv.config()
-
+app.use(cors())
 
 const PORT = process.env.PORT
 
