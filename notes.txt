@@ -19,3 +19,13 @@ max
 first 
 last
 avg
+
+
+
+
+// Task
+
+// /products =  all the products ✅
+// /products?category=mobile => only category mobile ✅
+// /products?rating=4.9=> products with rating 4.9 ✅
+// /products?category=mobile&rating=5 ✅
