@@ -5,6 +5,10 @@ import * as dotenv from 'dotenv'
 import cors from "cors"
 import { MongoClient } from "mongodb"
 import { productRouter } from "./routes/products.js"
+import { usersRouter } from "./routes/users.js"
+
+
+
 const app = express()
 dotenv.config()
 app.use(cors())
@@ -46,6 +50,10 @@ app.get('/', (req, res) => {
 })
 
 app.use("/products", productRouter)
+
+
+app.use("/users", usersRouter)
+
 
 app.listen(PORT, () => console.log("Server is starting on port", PORT))
 
